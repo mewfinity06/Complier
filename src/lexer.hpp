@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 enum TokenKind {
 
@@ -35,8 +36,20 @@ enum TokenKind {
     Bang,
     Question,
     Pipe,
+    Semicolon,
+    Colon,
 
     BinOperator,
+
+    // Keywords
+    Let,
+    Const,
+    Func,
+    For,
+    While,
+    Int,
+    String,
+
 };
 
 class Token {
@@ -59,12 +72,20 @@ class Lexer {
         std::vector<Token> tokens;
         std::string buf;
 
+        auto keywords = create_keywords();
+
         while (source[index] != '\0') {
             // Handle multi char tokens
             // TODO: Expand to recognizing
             if (source[index] == ' ' || source[index] == '\n' || source[index] == '\t') {
                 if (isalpha(buf[0])) {
-                    tokens.push_back(Token(buf, Ident));
+                    auto it = keywords.find(buf);
+                    if (it != keywords.end()) {
+                        tokens.push_back(Token(buf, keywords[buf]));
+                    }
+                    else {
+                        tokens.push_back(Token(buf, Ident));
+                    }
                 }
                 if (isdigit(buf[0])) {
                     int dot_found = 0;
@@ -167,6 +188,12 @@ class Lexer {
                 case '/':
                     tokens.push_back(Token(source[index], BinOperator));
                     break;
+                case ';':
+                    tokens.push_back(Token(source[index], Semicolon));
+                    break;
+                case ':':
+                    tokens.push_back(Token(source[index], Colon));
+                    break;
             }
             index++;
         }
@@ -176,4 +203,19 @@ class Lexer {
         return tokens;
     }
 
+    private:
+
+    std::map<std::string, TokenKind> create_keywords() {
+        std::map<std::string, TokenKind> keywords;
+
+        keywords["let"] = Let;
+        keywords["const"] = Const;
+        keywords["func"] = Func;
+        keywords["for"] = For;
+        keywords["while"] = While;
+        keywords["int"] = Int;
+        keywords["string"] = String;
+
+        return keywords;
+    }
 };
