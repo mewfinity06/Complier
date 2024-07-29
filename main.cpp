@@ -9,12 +9,14 @@
 std::ostream &operator<<(std::ostream& strm, TokenKind tt) {
     const std::string kind[] = {
         "EOF", "Identifier", "Number", "QuotedString",
-        "RightArrow", "LeftArrow", "GreaterThan", "LessThan",
+        "RightArrow", "LeftArrow", "Assign", 
+        "GreaterThan", "LessThan", "GreaterEquals", "LessEquals",
         "And", "Or", "PlusPlus", "MinusMinus", "DoubleEquals",
-        "OpenParen", "CloseParen", "OpenBrack", "CloseBrack",
-        "OpenCurly", "CloseCurly", "Tilda", "Bang", "Question",
-        "Pipe", "Semicolon", "Colon", "BinaryOperator", "Let",
-        "Const", "Func", "For", "While", "Int", "String"
+        "FatArrow", "OpenParen", "CloseParen", "OpenBrack", 
+        "CloseBrack", "OpenCurly", "CloseCurly", "Tilda", 
+        "Bang", "Question", "Pipe", "Semicolon", "Colon", 
+        "BinaryOperator", "Let", "Const", "Func", "For", "While", 
+        "Int", "String",
     };
     return strm << kind[tt];
 }

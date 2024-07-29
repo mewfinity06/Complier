@@ -14,15 +14,19 @@ enum TokenKind {
 
     RightArrow,
     LeftArrow,
+    Assign,
 
     GreaterThan,
     LessThan,
+    GreaterEquals,
+    LessEquals,
 
     And,
     Or,
     PlusPlus,
     MinusMinus,
     DoubleEquals,
+    FatArrow,
 
     // Single char tokens
     OpenParen,
@@ -65,53 +69,30 @@ class Lexer {
     public:
     std::string source;
     int index;
+    std::map<std::string, TokenKind> keywords;
+    std::vector<Token> tokens;
 
     Lexer(std::string source) : source(source) {}
 
     std::vector<Token> tokenize() {
-        std::vector<Token> tokens;
         std::string buf;
 
-        auto keywords = create_keywords();
+        keywords = create_keywords();
 
         while (source[index] != '\0') {
-            // Handle multi char tokens
-            // TODO: Expand to recognizing
-            if (source[index] == ' ' || source[index] == '\n' || source[index] == '\t') {
-                if (isalpha(buf[0])) {
-                    auto it = keywords.find(buf);
-                    if (it != keywords.end()) {
-                        tokens.push_back(Token(buf, keywords[buf]));
-                    }
-                    else {
-                        tokens.push_back(Token(buf, Ident));
-                    }
-                }
-                if (isdigit(buf[0])) {
-                    int dot_found = 0;
-                    for (char c : buf) {
-                        if (!isdigit(c) || dot_found > 1) {
-                            std::cerr << "Cannot have alpha characters in number : " << buf << std::endl;
-                            exit(1);
-                        }
-                    }
-                    tokens.push_back(Token(buf, Number));
-                }
-                buf = "";
-                index++;
-                continue;
-            }
-
+            // If is an alpha or numberic, add to the buffer to be processed above
             if (isalnum(source[index])) {
                 buf += source[index];
             }
 
+            // Handle single line comments
             if (source[index] == '/' && source[index + 1] == '/') {
                 while (source[index] != '\n') {
                     index++;
                 }
             }
 
+            // Handle multi line comments
             else if (source[index] == '/' && source[index + 1 == '*']) {
                 index += 2;
                 while (source[index] != '*' && source[index + 1] != '/') {
@@ -120,6 +101,7 @@ class Lexer {
                 index += 2;
             }
 
+            // Hangle QuotedStrings
             if (source[index] == '"') {
                 std::string comment_buf;
                 do {
@@ -140,10 +122,11 @@ class Lexer {
                 tokens.push_back(Token(comment_buf, QuotedString));
                 index++;
             }
-
+            
+            // Handle ->, <-, ==, ++, --, etc
             if (source[index] == '-' && source[index + 1] == '>') {
                 tokens.push_back(Token("->", RightArrow));
-                index += 1;
+                index += 2;
             }
             else if (source[index] == '<' && source[index + 1] == '-') {
                 tokens.push_back(Token("<-", LeftArrow));
@@ -152,7 +135,7 @@ class Lexer {
 
             if (source[index] == '=' && source[index + 1] == '=') {
                 tokens.push_back(Token("==", DoubleEquals));
-                index += 1;
+                index += 2;
             }
             else if (source[index] == '+' && source[index + 1] == '+') {
                 tokens.push_back(Token("++", PlusPlus));
@@ -162,51 +145,92 @@ class Lexer {
                 tokens.push_back(Token("--", MinusMinus));
                 index += 2;
             }
+            else if (source[index] == '>' && source[index + 1] == '=') {
+                tokens.push_back(Token(">=", GreaterEquals));
+                index += 2;
+            }
+            else if (source[index] == '<' && source[index + 1] == '=') {
+                tokens.push_back(Token("<=", LessEquals));
+                index += 2;
+            }
+            else if (source[index] == '=' && source[index + 1] == '>') {
+                tokens.push_back(Token("=>", FatArrow));
+                index += 2;
+            }
 
+            // Handle single char tokens
             switch (source[index]) {
                 case '{':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], OpenCurly));
                     break;
                 case '}':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], CloseCurly));
                     break;
                 case '[':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], OpenBrack));
                     break;
                 case ']':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], CloseBrack));
                     break;
                 case '(':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], OpenParen));
                     break;
                 case ')':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], CloseParen));
                     break;
                 case '+':
                 case '-':
                 case '*':
                 case '/':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], BinOperator));
                     break;
+                case '=':
+                    tokenize_multi(buf);
+                    tokens.push_back(Token(source[index], Assign));
+                    break;
                 case ';':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Semicolon));
                     break;
                 case ':':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Colon));
                     break;
                 case '~':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Tilda));
                     break;
                 case '!':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Bang));
                     break;
                 case '?':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Question));
                     break;
                 case '|':
+                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Pipe));
                     break;
+                case '>':
+                    tokenize_multi(buf);
+                    tokens.push_back(Token(source[index], GreaterThan));
+                    break;
+                case '<':
+                    tokenize_multi(buf);
+                    tokens.push_back(Token(source[index], LessThan));
+                    break;
             }
+            // Handle multi char tokens
+            // TODO: Expand to recognizing floats
+            tokenize_multi(buf);
             index++;
         }
 
@@ -229,5 +253,30 @@ class Lexer {
         keywords["string"] = String;
 
         return keywords;
+    }
+
+    void tokenize_multi(std::string &buf) {
+        if (source[index] == ' ' || source[index] == '\n' || source[index] == '\t' || !isalnum(source[index])) {
+                if (isalpha(buf[0])) {
+                    auto it = keywords.find(buf);
+                    if (it != keywords.end()) {
+                        tokens.push_back(Token(buf, keywords[buf]));
+                    }
+                    else {
+                        tokens.push_back(Token(buf, Ident));
+                    }
+                }
+                if (isdigit(buf[0])) {
+                    int dot_found = 0;
+                    for (char c : buf) {
+                        if (!isdigit(c) || dot_found > 1) {
+                            std::cerr << "Cannot have alpha characters in number : " << buf << std::endl;
+                            exit(1);
+                        }
+                    }
+                    tokens.push_back(Token(buf, Number));
+                }
+                buf = "";
+            }
     }
 };
