@@ -15,8 +15,8 @@ std::ostream &operator<<(std::ostream& strm, TokenKind tt) {
         "FatArrow", "OpenParen", "CloseParen", "OpenBrack", 
         "CloseBrack", "OpenCurly", "CloseCurly", "Tilda", 
         "Bang", "Question", "Pipe", "Semicolon", "Colon", 
-        "BinaryOperator", "Let", "Const", "Func", "For", "While", 
-        "Int", "String",
+        "BinaryOperator", "Let", "Const", "Func", "For", 
+        "If", "Else", "Elif", "While", "Int", "String",
     };
     return strm << kind[tt];
 }

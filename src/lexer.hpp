@@ -50,6 +50,9 @@ enum TokenKind {
     Const,
     Func,
     For,
+    If,
+    Else,
+    Elif,
     While,
     Int,
     String,
@@ -84,6 +87,8 @@ class Lexer {
             if (isalnum(source[index])) {
                 buf += source[index];
             }
+
+            tokenize_multi(buf);
 
             // Handle single line comments
             if (source[index] == '/' && source[index + 1] == '/') {
@@ -161,27 +166,21 @@ class Lexer {
             // Handle single char tokens
             switch (source[index]) {
                 case '{':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], OpenCurly));
                     break;
                 case '}':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], CloseCurly));
                     break;
                 case '[':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], OpenBrack));
                     break;
                 case ']':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], CloseBrack));
                     break;
                 case '(':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], OpenParen));
                     break;
                 case ')':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], CloseParen));
                     break;
                 case '+':
@@ -196,41 +195,30 @@ class Lexer {
                     tokens.push_back(Token(source[index], Assign));
                     break;
                 case ';':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Semicolon));
                     break;
                 case ':':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Colon));
                     break;
                 case '~':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Tilda));
                     break;
                 case '!':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Bang));
                     break;
                 case '?':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Question));
                     break;
                 case '|':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], Pipe));
                     break;
                 case '>':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], GreaterThan));
                     break;
                 case '<':
-                    tokenize_multi(buf);
                     tokens.push_back(Token(source[index], LessThan));
                     break;
             }
-            // Handle multi char tokens
-            // TODO: Expand to recognizing floats
-            tokenize_multi(buf);
             index++;
         }
 
@@ -251,6 +239,9 @@ class Lexer {
         keywords["while"] = While;
         keywords["int"] = Int;
         keywords["string"] = String;
+        keywords["if"] = If;
+        keywords["else"] = Else;
+        keywords["elif"] = Elif;
 
         return keywords;
     }
