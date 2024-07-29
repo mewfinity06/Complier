@@ -194,6 +194,18 @@ class Lexer {
                 case ':':
                     tokens.push_back(Token(source[index], Colon));
                     break;
+                case '~':
+                    tokens.push_back(Token(source[index], Tilda));
+                    break;
+                case '!':
+                    tokens.push_back(Token(source[index], Bang));
+                    break;
+                case '?':
+                    tokens.push_back(Token(source[index], Question));
+                    break;
+                case '|':
+                    tokens.push_back(Token(source[index], Pipe));
+                    break;
             }
             index++;
         }

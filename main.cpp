@@ -6,6 +6,19 @@
 
 #include "src/lexer.hpp"
 
+std::ostream &operator<<(std::ostream& strm, TokenKind tt) {
+    const std::string kind[] = {
+        "EOF", "Identifier", "Number", "QuotedString",
+        "RightArrow", "LeftArrow", "GreaterThan", "LessThan",
+        "And", "Or", "PlusPlus", "MinusMinus", "DoubleEquals",
+        "OpenParen", "CloseParen", "OpenBrack", "CloseBrack",
+        "OpenCurly", "CloseCurly", "Tilda", "Bang", "Question",
+        "Pipe", "Semicolon", "Colon", "BinaryOperator", "Let",
+        "Const", "Func", "For", "While", "Int", "String"
+    };
+    return strm << kind[tt];
+}
+
 int main(int argc, char* argv[]) {
     // Check if a filename was provided
     if (argc < 2) {
@@ -32,6 +45,7 @@ int main(int argc, char* argv[]) {
 
     Lexer lex = Lexer(contents);
     auto tokens = lex.tokenize();
+
     for (Token token : tokens) {
         std::cout << token.value << " -> " << token.kind << std::endl;
     }
