@@ -48,10 +48,9 @@ int main(int argc, char* argv[]) {
     Lexer lex = Lexer(contents);
     auto tokens = lex.tokenize();
 
-    for (Token token : tokens) {
-        std::cout << token.value << " -> " << token.kind << std::endl;
+    for (auto& token : tokens) {
+        std::cout << token.kind <<  " -> '" << token.value << "'" << std::endl;
     }
-
 
     return 0;
 }

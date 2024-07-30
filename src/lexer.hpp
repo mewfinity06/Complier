@@ -70,12 +70,12 @@ class Token {
 
 class Lexer {
     public:
-    std::string source;
+    std::string &source;
     int index;
     std::map<std::string, TokenKind> keywords;
     std::vector<Token> tokens;
 
-    Lexer(std::string source) : source(source) {}
+    Lexer(std::string &source) : source(source) {}
 
     std::vector<Token> tokenize() {
         std::string buf;
@@ -92,18 +92,19 @@ class Lexer {
 
             // Handle single line comments
             if (source[index] == '/' && source[index + 1] == '/') {
+                advance(2);
                 while (source[index] != '\n') {
-                    index++;
+                    advance();
                 }
             }
 
             // Handle multi line comments
             else if (source[index] == '/' && source[index + 1 == '*']) {
-                index += 2;
+                advance(2);
                 while (source[index] != '*' && source[index + 1] != '/') {
-                    index++;
+                    advance();
                 }
-                index += 2;
+                advance(2);
             }
 
             // Hangle QuotedStrings
@@ -111,56 +112,56 @@ class Lexer {
                 std::string comment_buf;
                 do {
                     comment_buf += source[index];
-                    index++;
+                    advance();
                 } while (source[index] != '"');
                 comment_buf += '"';
                 tokens.push_back(Token(comment_buf, QuotedString));
-                index++;
+                advance();
             }
             else if (source[index] == '\'') {
                 std::string comment_buf;
                 do {
                     comment_buf += source[index];
-                    index++;
+                    advance();
                 } while (source[index] != '\'');
                 comment_buf += '\'';
                 tokens.push_back(Token(comment_buf, QuotedString));
-                index++;
+                advance();
             }
             
             // Handle ->, <-, ==, ++, --, etc
             if (source[index] == '-' && source[index + 1] == '>') {
                 tokens.push_back(Token("->", RightArrow));
-                index += 2;
+                advance(2);
             }
             else if (source[index] == '<' && source[index + 1] == '-') {
                 tokens.push_back(Token("<-", LeftArrow));
-                index += 2;
+                advance(2);
             }
 
             if (source[index] == '=' && source[index + 1] == '=') {
                 tokens.push_back(Token("==", DoubleEquals));
-                index += 2;
+                advance(2);
             }
             else if (source[index] == '+' && source[index + 1] == '+') {
                 tokens.push_back(Token("++", PlusPlus));
-                index += 2;
+                advance(2);
             }
             else if (source[index] == '-' && source[index + 1] == '-') {
                 tokens.push_back(Token("--", MinusMinus));
-                index += 2;
+                advance(2);
             }
             else if (source[index] == '>' && source[index + 1] == '=') {
                 tokens.push_back(Token(">=", GreaterEquals));
-                index += 2;
+                advance(2);
             }
             else if (source[index] == '<' && source[index + 1] == '=') {
                 tokens.push_back(Token("<=", LessEquals));
-                index += 2;
+                advance(2);
             }
             else if (source[index] == '=' && source[index + 1] == '>') {
                 tokens.push_back(Token("=>", FatArrow));
-                index += 2;
+                advance(2);
             }
 
             // Handle single char tokens
@@ -219,7 +220,7 @@ class Lexer {
                     tokens.push_back(Token(source[index], LessThan));
                     break;
             }
-            index++;
+            advance();
         }
 
         tokens.push_back(Token("EOF", Eof));
@@ -228,6 +229,10 @@ class Lexer {
     }
 
     private:
+
+    void advance(int offset = 1) {
+        index += offset;
+    }
 
     std::map<std::string, TokenKind> create_keywords() {
         std::map<std::string, TokenKind> keywords;
