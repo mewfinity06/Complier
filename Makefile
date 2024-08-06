@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ashtonsickler/Desktop/Dev/CPP/Complier
+CMAKE_SOURCE_DIR = /home/mew/Dev/C/fusion_compiler_cpp/Complier
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ashtonsickler/Desktop/Dev/CPP/Complier
+CMAKE_BINARY_DIR = /home/mew/Dev/C/fusion_compiler_cpp/Complier
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ashtonsickler/Desktop/Dev/CPP/Complier/CMakeFiles /home/ashtonsickler/Desktop/Dev/CPP/Complier//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mew/Dev/C/fusion_compiler_cpp/Complier/CMakeFiles /home/mew/Dev/C/fusion_compiler_cpp/Complier//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ashtonsickler/Desktop/Dev/CPP/Complier/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mew/Dev/C/fusion_compiler_cpp/Complier/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
