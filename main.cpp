@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "src/lexer.hpp"
+#include "src/parser.hpp"
 
 std::ostream &operator<<(std::ostream& strm, TokenKind tt) {
     const std::string kind[] = {
@@ -45,12 +45,10 @@ int main(int argc, char* argv[]) {
     // Close the file
     file.close();
 
-    Lexer lex = Lexer(contents);
+    Lexer lex(contents);
     auto tokens = lex.tokenize();
 
-    for (auto& token : tokens) {
-        std::cout << token.kind <<  " -> '" << token.value << "'" << std::endl;
-    }
+    Parser parse(lex);
 
     return 0;
 }

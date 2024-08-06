@@ -117,24 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named comp
+# Target rules for targets named fus
 
 # Build rule for target.
-comp: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 comp
-.PHONY : comp
+fus: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 fus
+.PHONY : fus
 
 # fast build rule for target.
-comp/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/comp.dir/build.make CMakeFiles/comp.dir/build
-.PHONY : comp/fast
+fus/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fus.dir/build.make CMakeFiles/fus.dir/build
+.PHONY : fus/fast
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/comp.dir/build.make CMakeFiles/comp.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fus.dir/build.make CMakeFiles/fus.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -142,7 +142,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/comp.dir/build.make CMakeFiles/comp.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fus.dir/build.make CMakeFiles/fus.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -150,7 +150,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/comp.dir/build.make CMakeFiles/comp.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/fus.dir/build.make CMakeFiles/fus.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -161,7 +161,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... comp"
+	@echo "... fus"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

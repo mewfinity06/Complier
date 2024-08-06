@@ -75,7 +75,7 @@ class Lexer {
     std::map<std::string, TokenKind> keywords;
     std::vector<Token> tokens;
 
-    Lexer(std::string &source) : source(source) {}
+    Lexer(std::string &source) : source(source), index(0) {}
 
     std::vector<Token> tokenize() {
         std::string buf;
